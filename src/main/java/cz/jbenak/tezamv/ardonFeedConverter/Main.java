@@ -107,23 +107,25 @@ public class Main {
             Unmarshaller unmarshaller = context.createUnmarshaller();
             unmarshaller.setEventHandler(new DefaultValidationEventHandler());
             TargetShop loaded = (TargetShop) unmarshaller.unmarshal(xml);
-            List<String> images = new ArrayList<>();
+            Set<String> images = new HashSet<>();
             loaded.getItems().forEach(itm -> {
                 String[] imgarray = itm.getImages().split("\\|");
                 images.addAll(Arrays.asList(imgarray));
                 itm.setImages(itm.getImages().replaceAll("https://img.ardon.cz/fotocache/bigorig/images/produkty/", "ardon/"));
             });
             System.out.println("Počet obrázků ke stažení: " + images.size());
-            images.forEach(img -> {
+            int index = 1;
+            for(String img:images) {
                 try {
-                    System.out.println("Stahuji " + images.indexOf(img) + " z  " + images.size() + ": " + img);
+                    System.out.println("Stahuji " + index + " z " + images.size() + ": " + img);
                     String fileName = img.substring(img.lastIndexOf("/") + 1);
                     InputStream in = new URL(img).openStream();
                     Files.copy(in, Paths.get("C:/TMP/ARDON_IMG/" + fileName), StandardCopyOption.REPLACE_EXISTING);
                 } catch (IOException e) {
                     System.out.println("Nemohu stáhnout: " + img);
                 }
-            });
+                index++;
+            }
             Marshaller marshaller = context.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.marshal(loaded, new File("C:/TMP/ardon_eshoprychle.xml"));

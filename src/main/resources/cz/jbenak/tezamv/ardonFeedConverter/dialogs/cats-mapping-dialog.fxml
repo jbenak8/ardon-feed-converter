@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXTableView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<BorderPane prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.jbenak.tezamv.ardonFeedConverter.dialogs.CatsMappingDialogController">
+   <top>
+      <BorderPane prefHeight="109.0" prefWidth="1024.0" BorderPane.alignment="CENTER">
+         <bottom>
+            <HBox alignment="CENTER_LEFT" prefHeight="41.0" prefWidth="1024.0" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </BorderPane.margin>
+               <children>
+                  <MFXButton buttonType="RAISED" depthLevel="LEVEL1" onAction="#addRow" text="Přidat řádek">
+                     <graphic>
+                        <FontIcon iconLiteral="fltrmz-table-row-insert-24" iconSize="24" />
+                     </graphic>
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
+                  </MFXButton>
+                  <MFXButton buttonType="RAISED" depthLevel="LEVEL1" layoutX="133.0" layoutY="15.0" onAction="#updateRow" text="Upravit řádek">
+                     <graphic>
+                        <FontIcon iconLiteral="fltral-edit-24" iconSize="24" />
+                     </graphic>
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
+                  </MFXButton>
+                  <MFXButton buttonType="RAISED" depthLevel="LEVEL1" onAction="#deleteRow" text="Odebrat řádek">
+                     <graphic>
+                        <FontIcon iconLiteral="fltrmz-table-row-delete-24" iconSize="24" />
+                     </graphic>
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
+                  </MFXButton>
+                  <MFXButton buttonType="RAISED" depthLevel="LEVEL1" onAction="#save" text="Uložit">
+                     <graphic>
+                        <FontIcon iconLiteral="fltrmz-save-24" iconSize="24" />
+                     </graphic>
+                  </MFXButton>
+               </children>
+            </HBox>
+         </bottom>
+         <left>
+            <FontIcon iconLiteral="fltrmz-table-edit-24" iconSize="64" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets left="20.0" top="20.0" />
+               </BorderPane.margin>
+            </FontIcon>
+         </left>
+         <center>
+            <Label fx:id="title" text="Úprava kategorií pro ..." BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets top="10.0" />
+               </BorderPane.margin>
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+         </center>
+      </BorderPane>
+   </top>
+   <center>
+      <MFXTableView fx:id="table" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </BorderPane.margin>
+      </MFXTableView>
+   </center>
+</BorderPane>

@@ -1,4 +1,4 @@
-package cz.jbenak.tezamv.ardonFeedConverter;
+package cz.jbenak.tezamv.ardonFeedConverter.engine;
 
 import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 

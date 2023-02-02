@@ -2,7 +2,7 @@ package cz.jbenak.tezamv.ardonFeedConverter.target;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import cz.jbenak.tezamv.ardonFeedConverter.CDataAdapter;
+import cz.jbenak.tezamv.ardonFeedConverter.engine.CDataAdapter;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;

@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXCheckbox?>
+<?import io.github.palexdev.materialfx.controls.MFXProgressBar?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<BorderPane prefHeight="768.0" prefWidth="1024.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.jbenak.tezamv.ardonFeedConverter.MainController">
+    <top>
+        <HBox alignment="CENTER_RIGHT" prefHeight="66.0" prefWidth="1024.0" BorderPane.alignment="CENTER">
+            <children>
+                <MFXButton depthLevel="LEVEL5" onAction="#openInfoDialog" text=" ">
+                    <graphic>
+                        <FontIcon iconLiteral="fltral-info-24" iconSize="48" selectionFill="#ffffff00" />
+                    </graphic>
+               <tooltip>
+                  <Tooltip text="Zobrazit info o aplikaci" />
+               </tooltip>
+                </MFXButton>
+            </children>
+            <BorderPane.margin>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            </BorderPane.margin>
+        </HBox>
+    </top>
+    <center>
+        <TabPane maxHeight="305.0" prefHeight="305.0" prefWidth="1004.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+            <tabs>
+                <Tab text="Ardon">
+                    <content>
+                        <BorderPane layoutX="111.0" layoutY="76.0" prefHeight="222.0" prefWidth="1004.0">
+                            <center>
+                                <VBox prefHeight="282.0" prefWidth="1004.0" BorderPane.alignment="CENTER">
+                                    <children>
+                                        <GridPane>
+                                            <columnConstraints>
+                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="328.0" minWidth="10.0" prefWidth="200.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="850.0" minWidth="10.0" prefWidth="682.0" />
+                                                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="211.0" minWidth="10.0" prefWidth="144.0" />
+                                            </columnConstraints>
+                                            <rowConstraints>
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" prefHeight="45.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" prefHeight="45.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" prefHeight="45.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                            </rowConstraints>
+                                            <children>
+                                                <Label text="URL XML feedu:" />
+                                                <Label prefHeight="42.0" prefWidth="172.0" text="Uložit stažený feed jako:      (bude použito jako vstupní data)" wrapText="true" GridPane.rowIndex="1" />
+                                                <Label text="Uložit zpracovaný feed jako:" GridPane.rowIndex="2" />
+                                                <Label text="Stáhnout obrázky do složky:" GridPane.rowIndex="3" />
+                                                <Label text="Nahrát feed do (přes FTP):" GridPane.rowIndex="4" />
+                                                <TextField fx:id="feedUrlArdon" GridPane.columnIndex="1" />
+                                                <TextField fx:id="downloadedFileArdon" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                <TextField fx:id="processedFileArdon" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                <TextField fx:id="imagesFolderArdon" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                <TextField fx:id="feedUploadArdon" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                <FontIcon />
+                                                <MFXButton onAction="#selectProcessedFeedArdon" prefWidth="125.0" text="Uložit jako..." GridPane.columnIndex="2" GridPane.rowIndex="2">
+                                                    <graphic>
+                                                        <FontIcon iconLiteral="fltral-folder-open-24" iconSize="24" />
+                                                    </graphic>
+                                                </MFXButton>
+                                                <MFXButton onAction="#selectDownloadedFeedArdon" prefWidth="125.0" text="Uložit jako..." GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                                    <graphic>
+                                                        <FontIcon iconLiteral="fltral-folder-open-24" iconSize="24" />
+                                                    </graphic>
+                                                </MFXButton>
+                                                <MFXButton onAction="#selectImageDirectoryArdon" prefHeight="32.0" prefWidth="125.0" text="Vybrat složku" GridPane.columnIndex="2" GridPane.rowIndex="3">
+                                                    <graphic>
+                                                        <FontIcon iconLiteral="fltral-folder-open-24" iconSize="24" />
+                                                    </graphic>
+                                                </MFXButton>
+                                            </children>
+                                            <VBox.margin>
+                                                <Insets top="10.0" />
+                                            </VBox.margin>
+                                        </GridPane>
+                                        <HBox alignment="CENTER_LEFT" prefHeight="49.0" prefWidth="1004.0">
+                                            <children>
+                                                <MFXCheckbox fx:id="loadFeedArdon" text="Nahrávat feed">
+                                                    <HBox.margin>
+                                                        <Insets right="10.0" />
+                                                    </HBox.margin>
+                                                </MFXCheckbox>
+                                                <MFXButton onAction="#openCredentialsDialogArdon" text="Změnit přístupové údaje k FTP">
+                                                    <graphic>
+                                                        <FontIcon iconLiteral="fltrmz-people-settings-20" iconSize="24" />
+                                                    </graphic>
+                                                    <HBox.margin>
+                                                        <Insets right="100.0" />
+                                                    </HBox.margin>
+                                                </MFXButton>
+                                    <MFXButton onAction="#openArdonCats" text="Mapování kategorií">
+                                       <HBox.margin>
+                                          <Insets right="100.0" />
+                                       </HBox.margin>
+                                       <graphic>
+                                          <FontIcon iconLiteral="fltrmz-text-bullet-list-24" iconSize="24" />
+                                       </graphic>
+                                    </MFXButton>
+                                                <MFXButton fx:id="btnStartArdon" text="Zpracovat feed">
+                                                    <graphic>
+                                                        <FontIcon iconColor="#238c23" iconLiteral="fltrmz-play-24" iconSize="24" />
+                                                    </graphic>
+                                                    <HBox.margin>
+                                                        <Insets right="20.0" />
+                                                    </HBox.margin>
+                                                </MFXButton>
+                                                <MFXButton fx:id="btnDownloadImagesArdon" text="Stáhnout obrázky">
+                                                    <graphic>
+                                                        <FontIcon iconLiteral="fltfal-arrow-download-24" iconSize="24" />
+                                                    </graphic>
+                                                </MFXButton>
+                                            </children>
+                                            <VBox.margin>
+                                                <Insets top="10.0" />
+                                            </VBox.margin>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+                            </center>
+                        </BorderPane>
+                    </content>
+                </Tab>
+                <Tab text="Luma">
+                    <content>
+                        <BorderPane layoutX="111.0" layoutY="76.0" prefHeight="222.0" prefWidth="1004.0">
+                            <center>
+                                <VBox prefHeight="282.0" prefWidth="1004.0" BorderPane.alignment="CENTER">
+                                    <children>
+                                        <GridPane>
+                                            <columnConstraints>
+                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="328.0" minWidth="10.0" prefWidth="200.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="850.0" minWidth="10.0" prefWidth="661.0" />
+                                                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="211.0" minWidth="10.0" prefWidth="144.0" />
+                                            </columnConstraints>
+                                            <rowConstraints>
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" prefHeight="45.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" prefHeight="45.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                            </rowConstraints>
+                                            <children>
+                                                <Label text="URL XML feedu:" />
+                                                <Label prefHeight="42.0" prefWidth="172.0" text="Uložit stažený feed jako:      (bude použito jako vstupní data)" wrapText="true" GridPane.rowIndex="1" />
+                                                <Label text="Uložit zpracovaný feed jako:" GridPane.rowIndex="2" />
+                                                <Label text="Nahrát feed do (přes FTP):" GridPane.rowIndex="3" />
+                                                <TextField fx:id="feedUrlLuma" GridPane.columnIndex="1" />
+                                                <TextField fx:id="downloadedFileLuma" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                <TextField fx:id="processedFileLuma" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                <TextField fx:id="feedUploadLuma" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                <FontIcon />
+                                                <MFXButton onAction="#selectProcessedFeedLuma" prefWidth="125.0" text="Uložit jako..." GridPane.columnIndex="2" GridPane.rowIndex="2">
+                                                    <graphic>
+                                                        <FontIcon iconLiteral="fltral-folder-open-24" iconSize="24" />
+                                                    </graphic>
+                                                </MFXButton>
+                                                <MFXButton onAction="#selectDownloadedFeedLuma" prefWidth="125.0" text="Uložit jako..." GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                                    <graphic>
+                                                        <FontIcon iconLiteral="fltral-folder-open-24" iconSize="24" />
+                                                    </graphic>
+                                                </MFXButton>
+                                            </children>
+                                            <VBox.margin>
+                                                <Insets top="10.0" />
+                                            </VBox.margin>
+                                        </GridPane>
+                                        <HBox alignment="CENTER_LEFT" prefHeight="49.0" prefWidth="1004.0">
+                                            <children>
+                                                <MFXCheckbox fx:id="loadFeedLuma" text="Nahrávat feed">
+                                                    <HBox.margin>
+                                                        <Insets right="10.0" />
+                                                    </HBox.margin>
+                                                </MFXCheckbox>
+                                                <MFXButton onAction="#openCredentialsDialogLuma" text="Změnit přístupové údaje k FTP">
+                                                    <graphic>
+                                                        <FontIcon iconLiteral="fltrmz-people-settings-20" iconSize="24" />
+                                                    </graphic>
+                                                    <HBox.margin>
+                                                        <Insets right="100.0" />
+                                                    </HBox.margin>
+                                                </MFXButton>
+                                    <MFXButton onAction="#openLumaCats" text="Mapování kategorií">
+                                       <graphic>
+                                          <FontIcon iconLiteral="fltrmz-text-bullet-list-24" iconSize="24" />
+                                       </graphic>
+                                       <HBox.margin>
+                                          <Insets right="100.0" />
+                                       </HBox.margin>
+                                    </MFXButton>
+                                                <MFXButton fx:id="btnStartLuma" text="Zpracovat feed">
+                                                    <graphic>
+                                                        <FontIcon iconColor="#238c23" iconLiteral="fltrmz-play-24" iconSize="24" />
+                                                    </graphic>
+                                                    <HBox.margin>
+                                                        <Insets right="20.0" />
+                                                    </HBox.margin>
+                                                </MFXButton>
+                                            </children>
+                                            <VBox.margin>
+                                                <Insets top="10.0" />
+                                            </VBox.margin>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+                            </center>
+                        </BorderPane>
+                    </content>
+                </Tab>
+            </tabs>
+            <BorderPane.margin>
+                <Insets bottom="10.0" left="10.0" right="10.0" />
+            </BorderPane.margin>
+        </TabPane>
+    </center>
+    <bottom>
+        <VBox prefHeight="343.0" prefWidth="1004.0" BorderPane.alignment="CENTER">
+            <BorderPane.margin>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            </BorderPane.margin>
+            <children>
+                <GridPane minHeight="24.0" prefHeight="40.0" prefWidth="1004.0">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                    <children>
+                        <Label fx:id="infoMessage" text="Připraven" />
+                        <MFXButton fx:id="btnStop" text="Zrušit" GridPane.columnIndex="2">
+                            <graphic>
+                                <FontIcon iconColor="#b21919" iconLiteral="fltrmz-share-stop-24" iconSize="24" />
+                            </graphic>
+                        </MFXButton>
+                        <MFXProgressBar fx:id="progressBar" prefHeight="22.0" prefWidth="331.0" GridPane.columnIndex="1" />
+                    </children>
+                    <VBox.margin>
+                        <Insets bottom="10.0" />
+                    </VBox.margin>
+                </GridPane>
+                <MFXButton onAction="#copyLogToClipboard" text="Kopírovat protokol aplikace:">
+                    <VBox.margin>
+                        <Insets bottom="5.0" />
+                    </VBox.margin>
+                    <graphic>
+                        <FontIcon iconLiteral="fltral-copy-24" iconSize="24" />
+                    </graphic>
+                </MFXButton>
+                <TextArea fx:id="logView" editable="false" prefHeight="308.0" prefWidth="1004.0" />
+            </children>
+        </VBox>
+    </bottom>
+</BorderPane>

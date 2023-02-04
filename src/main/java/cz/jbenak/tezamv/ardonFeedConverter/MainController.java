@@ -3,6 +3,7 @@ package cz.jbenak.tezamv.ardonFeedConverter;
 import cz.jbenak.tezamv.ardonFeedConverter.dialogs.CatsMappingDialogController;
 import cz.jbenak.tezamv.ardonFeedConverter.dialogs.InfoDialogController;
 import cz.jbenak.tezamv.ardonFeedConverter.dialogs.PasswordDialogController;
+import cz.jbenak.tezamv.ardonFeedConverter.engine.Engine;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXCheckbox;
 import io.github.palexdev.materialfx.controls.MFXProgressBar;
@@ -17,13 +18,14 @@ import javafx.scene.image.Image;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.stage.*;
-import static cz.jbenak.tezamv.ardonFeedConverter.dialogs.CatsMappingDialogController.CatsType;
 
 import java.io.File;
 import java.net.URL;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.ResourceBundle;
+
+import static cz.jbenak.tezamv.ardonFeedConverter.dialogs.CatsMappingDialogController.CatsType;
 
 public class MainController implements Initializable {
 
@@ -58,11 +60,18 @@ public class MainController implements Initializable {
     @FXML
     private TextField feedUploadLuma;
     @FXML
+    private TextField imagesUrlArdon;
+    @FXML
+    private TextField imagesUrlReplaceArdon;
+    @FXML
     private MFXButton btnStartArdon;
     @FXML
-    private MFXButton btnDownloadImagesArdon;
-    @FXML
     private MFXButton btnStartLuma;
+    @FXML
+    private MFXCheckbox notDownloadImagesArdon;
+    @FXML
+    private TextField uploadImagesUrlArdon;
+    private final Engine engine = new Engine(this);
 
     @FXML
     private void selectDownloadedFeedArdon() {
@@ -89,19 +98,79 @@ public class MainController implements Initializable {
         openSaveDialog(processedFileLuma, false, "LumaKImportu.xml");
     }
 
+    public MFXProgressBar getProgressBar() {
+        return progressBar;
+    }
+
+    public Label getInfoMessage() {
+        return infoMessage;
+    }
+
+    public String getArdonFeedUrl() {
+        return feedUrlArdon.getText().trim();
+    }
+
+    public String getLumaFeedUrl() {
+        return feedUrlLuma.getText().trim();
+    }
+
+    public String getArdonDownloadedFile() {
+        return downloadedFileArdon.getText().trim();
+    }
+
+    public String getLumaDownloadedFile() {
+        return downloadedFileLuma.getText().trim();
+    }
+
+    public String getArdonProcessedFile() {
+        return processedFileArdon.getText().trim();
+    }
+
+    public String getLumaProcessedFile() {
+        return processedFileLuma.getText().trim();
+    }
+
+    public String getArdonImagesFolder() {
+        return imagesFolderArdon.getText().trim();
+    }
+
+    public String getArdonImagesUrlPath() {
+        return imagesUrlArdon.getText().trim();
+    }
+
+    public String getArdonImagesUrlPathReplaceTo() {
+        return imagesUrlReplaceArdon.getText().trim();
+    }
+
+    public MFXButton getBtnStop() {
+        return btnStop;
+    }
+
+    public MFXButton getBtnStartArdon() {
+        return btnStartArdon;
+    }
+
+    public MFXButton getBtnStartLuma() {
+        return btnStartLuma;
+    }
+
     private void openSaveDialog(TextField targetField, boolean directory, String suggestedFileName) {
         if (directory) {
             DirectoryChooser dc = new DirectoryChooser();
             dc.setTitle("Uložit obrázky do...");
             File selectedDir = dc.showDialog(Main.getInstance().getMainStage());
-            targetField.setText(selectedDir.getAbsolutePath());
+            if (selectedDir != null) {
+                targetField.setText(selectedDir.getAbsolutePath());
+            }
         } else {
             FileChooser fc = new FileChooser();
             fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Soubory XML", ".xml"));
             fc.setInitialFileName(suggestedFileName);
             fc.setTitle("Uložit jako...");
             File selected = fc.showSaveDialog(Main.getInstance().getMainStage());
-            targetField.setText(selected.getAbsolutePath());
+            if (selected != null) {
+                targetField.setText(selected.getAbsolutePath());
+            }
         }
     }
 
@@ -136,6 +205,11 @@ public class MainController implements Initializable {
     }
 
     @FXML
+    private void openCredentialsDialogImagesUpload() {
+        openCredentialsDialog("Přístup pro upload obrázků", "ardon.upload.images.username", "ardon.upload.images.password");
+    }
+
+    @FXML
     private void openInfoDialog() {
         try {
             Stage infoStage = new Stage();
@@ -162,6 +236,26 @@ public class MainController implements Initializable {
     @FXML
     private void openLumaCats() {
         openCatsEditDialog(CatsType.LUMA);
+    }
+
+    @FXML
+    private void startProcessArdon() {
+        engine.processArdon();
+    }
+
+    @FXML
+    private void startProcessLuma() {
+        engine.processLuma();
+    }
+
+    @FXML
+    private void startDownloadImagesArdon() {
+        engine.downloadArdonImages(notDownloadImagesArdon.isSelected());
+    }
+
+    @FXML
+    private void stopProcess() {
+        engine.getCurrentTask().cancel(true);
     }
 
     private void openCatsEditDialog(CatsType type) {
@@ -196,6 +290,11 @@ public class MainController implements Initializable {
         clipboard.setContent(content);
     }
 
+    @FXML
+    private void emptyLog() {
+        logView.clear();
+    }
+
     public void appendTextToLog(String text) {
         logView.appendText(text + "\n");
     }
@@ -213,6 +312,10 @@ public class MainController implements Initializable {
         settings.setProperty("ardon.uploadUrl", feedUploadArdon.getText().trim());
         settings.setProperty("ardon.uploadEnabled", loadFeedArdon.isSelected() ? "true" : "false");
         settings.setProperty("luma.uploadEnabled", loadFeedLuma.isSelected() ? "true" : "false");
+        settings.setProperty("ardon.imagesPath", imagesUrlArdon.getText().trim());
+        settings.setProperty("ardon.imagesPath.replaceTo", imagesUrlReplaceArdon.getText().trim());
+        settings.setProperty("ardon.notDownloadImages", notDownloadImagesArdon.isSelected() ? "true" : "false");
+        settings.setProperty("ardon.upload.images.url", uploadImagesUrlArdon.getText().trim());
     }
 
     @Override
@@ -232,5 +335,9 @@ public class MainController implements Initializable {
         feedUploadLuma.setText(Main.getInstance().getAppSettings().getProperty("luma.uploadUrl"));
         loadFeedArdon.setSelected(Boolean.parseBoolean(Main.getInstance().getAppSettings().getProperty("ardon.uploadEnabled", "false")));
         loadFeedLuma.setSelected(Boolean.parseBoolean(Main.getInstance().getAppSettings().getProperty("luma.uploadEnabled", "false")));
+        notDownloadImagesArdon.setSelected(Boolean.parseBoolean(Main.getInstance().getAppSettings().getProperty("ardon.notDownloadImages", "false")));
+        imagesUrlArdon.setText(Main.getInstance().getAppSettings().getProperty("ardon.imagesPath"));
+        imagesUrlReplaceArdon.setText(Main.getInstance().getAppSettings().getProperty("ardon.imagesPath.replaceTo"));
+        uploadImagesUrlArdon.setText(Main.getInstance().getAppSettings().getProperty("ardon.upload.images.url"));
     }
 }

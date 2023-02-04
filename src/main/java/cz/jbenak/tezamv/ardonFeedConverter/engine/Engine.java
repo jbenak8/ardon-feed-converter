@@ -1,140 +1,203 @@
 package cz.jbenak.tezamv.ardonFeedConverter.engine;
 
-import cz.jbenak.tezamv.ardonFeedConverter.luma.LumaShop;
-import cz.jbenak.tezamv.ardonFeedConverter.mappers.ArdonMapper;
-import cz.jbenak.tezamv.ardonFeedConverter.source.Shop;
-import cz.jbenak.tezamv.ardonFeedConverter.target.TargetShop;
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.Marshaller;
-import jakarta.xml.bind.Unmarshaller;
-import jakarta.xml.bind.helpers.DefaultValidationEventHandler;
+import cz.jbenak.tezamv.ardonFeedConverter.Main;
+import cz.jbenak.tezamv.ardonFeedConverter.MainController;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.*;
-import java.util.stream.Stream;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Engine {
+    //TODO: Vypsat nezařazené kategorie (ty, pro které nebylo nalezeno párování)
 
-    public static void process(String[] args) {
-        if (args.length != 0 && Objects.equals(args[0], "luma")) {
-            loadLuma();
-        } else if (args.length != 0 && Objects.equals(args[0], "img")) {
-            loadImagesArdon();
-        } else {
-            File xml = new File("C:/TMP/ardon.xml");
-            try {
-                JAXBContext context = JAXBContext.newInstance(Shop.class);
-                //System.out.println(context.toString());
-                Unmarshaller unmarshaller = context.createUnmarshaller();
-                unmarshaller.setEventHandler(new DefaultValidationEventHandler());
-                Shop shop = (Shop) unmarshaller.unmarshal(xml);
-                ArdonMapper mapper = new ArdonMapper(shop);
-                mapper.createOutput();
-                TargetShop outputShop = mapper.getTarget();
-                /*HashSet<String> cats = new HashSet<>();
-                outputShop.getItems().forEach(itm -> cats.add(itm.getCategories()));
-                cats.forEach(System.out::println);*/
-                HashSet<String> noDupl = new HashSet<>();
-                outputShop.getItems().forEach(targetShopItem -> noDupl.add(targetShopItem.getCategories()));
-                //noDupl.forEach(System.out::println);
-                Map<String, String> catsMap = new HashMap<>();
-                try (Stream<String> stream = Files.lines(Paths.get("conf/ardon-categories.txt"), StandardCharsets.UTF_8)) {
-                    stream.forEach(line -> {
-                        String[] keyVal = line.split("=");
-                        catsMap.put(keyVal[0].trim(), keyVal[1].trim());
-                    });
-                }
-                outputShop.getItems().forEach(itm -> itm.setCategories(catsMap.get(itm.getCategories())));
-                JAXBContext targetContext = JAXBContext.newInstance(TargetShop.class);
-                Marshaller marshaller = targetContext.createMarshaller();
-                marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-                marshaller.marshal(outputShop, new File("C:/TMP/ardon_eshoprychle.xml"));
-                Path of = Path.of("C:/TMP/ardon_eshoprychle.xml");
-                String cdataCorrection = Files.readString(of, StandardCharsets.UTF_8);
-                cdataCorrection = cdataCorrection.replaceAll("&lt;", "<");
-                cdataCorrection = cdataCorrection.replaceAll("&gt;", ">");
-                Files.writeString(of, cdataCorrection);
-                /*InputStream in = new URL("https://img.ardon.cz/fotocache/bigorig/images/produkty/H8107_005.jpg").openStream();
-                Files.copy(in, Paths.get("C:/TMP/obr.jpg"), StandardCopyOption.REPLACE_EXISTING);*/
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+    private final MainController controller;
+    private final Processes processes;
+    private final ExecutorService taskExecutor = Executors.newCachedThreadPool(runnable -> {
+        Thread processor = Executors.defaultThreadFactory().newThread(runnable);
+        processor.setDaemon(true);
+        return processor;
+    });
+    private Task<Void> currentTask;
+
+    public Engine(MainController controller) {
+        this.controller = controller;
+        this.processes = new Processes(controller);
     }
 
-    private static void loadLuma() {
-        try {
-            File src = new File("C:/TMP/luma.xml");
-            JAXBContext context = JAXBContext.newInstance(LumaShop.class);
-            //System.out.println(context.toString());
-            Unmarshaller unmarshaller = context.createUnmarshaller();
-            unmarshaller.setEventHandler(new DefaultValidationEventHandler());
-            LumaShop shop = (LumaShop) unmarshaller.unmarshal(src);
-            /*HashSet<String> cats = new HashSet<>();
-            shop.getItems().forEach(itm -> cats.add(itm.getCategory()));
-            /cats.forEach(itm -> System.out.println(itm + "="));*/
-            Map<String, String> catsMap = new HashMap<>();
-            //System.out.println(Files.readString(Path.of("conf/luma-categories.txt")));
-            try (Stream<String> stream = Files.lines(Paths.get("conf/luma-categories.txt"), StandardCharsets.UTF_8)) {
-                stream.forEach(line -> {
-                    String[] keyVal = line.split("=");
-                    catsMap.put(keyVal[0].trim(), keyVal[1].trim());
-                });
-            }
-            shop.getItems().forEach(itm -> itm.setCategory(catsMap.get(itm.getCategory())));
-            Marshaller marshaller = context.createMarshaller();
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.marshal(shop, new File("C:/TMP/luma_uprava.xml"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public Task<Void> getCurrentTask() {
+        return currentTask;
     }
 
-    private static void loadImagesArdon() {
-        File xml = new File("C:/TMP/ardon_eshoprychle.xml");
-        try {
-            JAXBContext context = JAXBContext.newInstance(TargetShop.class);
-            Unmarshaller unmarshaller = context.createUnmarshaller();
-            unmarshaller.setEventHandler(new DefaultValidationEventHandler());
-            TargetShop loaded = (TargetShop) unmarshaller.unmarshal(xml);
-            Set<String> images = new HashSet<>();
-            loaded.getItems().forEach(itm -> {
-                String[] imgarray = itm.getImages().split("\\|");
-                images.addAll(Arrays.asList(imgarray));
-                itm.setImages(itm.getImages().replaceAll("https://img.ardon.cz/fotocache/bigorig/images/produkty/", "ardon/"));
-            });
-            System.out.println("Počet obrázků ke stažení: " + images.size());
-            int index = 1;
-            for(String img:images) {
+    public void processLuma() {
+        currentTask = new Task<>() {
+            @Override
+            protected Void call() {
+                Main.getInstance().setProcessing(true);
+                controller.appendTextToLog("Stahuji XML feed dodavatele Luma Trading s.r.o.");
+                Platform.runLater(() -> controller.getInfoMessage().setText("Stahuji XML feed Lumy"));
+                controller.getProgressBar().setVisible(true);
+                controller.getBtnStartLuma().setDisable(true);
+                controller.getBtnStop().setDisable(false);
                 try {
-                    System.out.println("Stahuji " + index + " z " + images.size() + ": " + img);
-                    String fileName = img.substring(img.lastIndexOf("/") + 1);
-                    InputStream in = new URL(img).openStream();
-                    Files.copy(in, Paths.get("C:/TMP/ARDON_IMG/" + fileName), StandardCopyOption.REPLACE_EXISTING);
-                } catch (IOException e) {
-                    System.out.println("Nemohu stáhnout: " + img);
+                    processes.downloadFile(controller.getLumaFeedUrl(), controller.getLumaDownloadedFile());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Platform.runLater(() -> Main.getInstance().showErrorDialog("Nelze stáhnout feed", "Nepodařilo se stáhnout XML feed partnera Luma:", e));
+                    controller.appendTextToLog("Stažení XML feedu nebylo možno dokončit.");
+                    controller.appendTextToLog(e.getLocalizedMessage());
                 }
-                index++;
+                controller.appendTextToLog("Stažení XML feedu dodavatele Luma dokončeno.");
+                if (checkFileExists(controller.getLumaDownloadedFile())) {
+                    try {
+                        processes.loadLuma();
+                    } catch (Exception e) {
+                        Platform.runLater(() -> Main.getInstance().showErrorDialog("Nelze zpracovat feed", "Nepodařilo se zpracovat XML feed partnera Luma:", e));
+                        controller.appendTextToLog("Zpracování XML feedu nebylo možno dokončit.");
+                        controller.appendTextToLog(e.getLocalizedMessage());
+                    }
+                } else {
+                    Main.getInstance().showErrorDialog("Nelze zpracovat feed", "Nepodařilo se zpracovat XML feed partnera Luma:", new IOException("Vstupní soubor " + controller.getLumaDownloadedFile() + " neexistuje, nebo se ho nepodařilo otevřít."));
+                    controller.appendTextToLog("Stažení XML feedu nebylo možno dokončit.");
+                }
+                controller.appendTextToLog("Zpracování XML feedu dodavatele Luma dokončeno.");
+                Platform.runLater(() -> controller.getInfoMessage().setText("Připraven"));
+                controller.getProgressBar().setVisible(false);
+                controller.getBtnStartLuma().setDisable(false);
+                controller.getBtnStop().setDisable(true);
+                Main.getInstance().setProcessing(false);
+                return null;
             }
-            Marshaller marshaller = context.createMarshaller();
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.marshal(loaded, new File("C:/TMP/ardon_eshoprychle.xml"));
-            Path of = Path.of("C:/TMP/ardon_eshoprychle.xml");
-            String cdataCorrection = Files.readString(of, StandardCharsets.UTF_8);
-            cdataCorrection = cdataCorrection.replaceAll("&lt;", "<");
-            cdataCorrection = cdataCorrection.replaceAll("&gt;", ">");
-            cdataCorrection = cdataCorrection.replaceAll("&nbsp;", " ");
-            Files.writeString(of, cdataCorrection);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+            @Override
+            protected void cancelled() {
+                try {
+                    processes.cancelProcess();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                controller.appendTextToLog("Zpracování XML feedu dodavatele Luma zrušeno.");
+                Platform.runLater(() -> controller.getInfoMessage().setText("Připraven"));
+                controller.getProgressBar().setVisible(false);
+                controller.getBtnStartLuma().setDisable(false);
+                controller.getBtnStop().setDisable(true);
+                Main.getInstance().setProcessing(false);
+            }
+        };
+        taskExecutor.submit(currentTask);
+    }
+
+    public void processArdon() {
+        currentTask = new Task<>() {
+            @Override
+            protected Void call() {
+                Main.getInstance().setProcessing(true);
+                controller.appendTextToLog("Stahuji XML feed dodavatele ARDON Safety s.r.o.");
+                Platform.runLater(() -> controller.getInfoMessage().setText("Stahuji XML feed Ardonu"));
+                controller.getProgressBar().setVisible(true);
+                controller.getBtnStartArdon().setDisable(true);
+                controller.getBtnStop().setDisable(false);
+                if (!this.isCancelled()) {
+                    try {
+                        processes.downloadFile(controller.getArdonFeedUrl(), controller.getArdonDownloadedFile());
+                    } catch (Exception e) {
+                        Platform.runLater(() -> Main.getInstance().showErrorDialog("Nelze stáhnout feed", "Nepodařilo se stáhnout XML feed partnera Ardon:", e));
+                        controller.appendTextToLog("Stažení XML feedu nebylo možno dokončit.");
+                        controller.appendTextToLog(e.getLocalizedMessage());
+                    }
+                    controller.appendTextToLog("Stažení XML feedu dodavatele Ardon dokončeno.");
+                }
+                if (!this.isCancelled() && checkFileExists(controller.getArdonDownloadedFile())) {
+                    try {
+                        processes.loadArdon();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Platform.runLater(() -> Main.getInstance().showErrorDialog("Nelze zpracovat feed", "Nepodařilo se zpracovat XML feed partnera Ardon:", e));
+                        controller.appendTextToLog("Zpracování XML feedu nebylo možno dokončit.");
+                        controller.appendTextToLog(e.getMessage());
+                    }
+                } else {
+                    Platform.runLater(() -> Main.getInstance().showErrorDialog("Nelze zpracovat feed", "Nepodařilo se zpracovat XML feed partnera Ardon:", new IOException("Vstupní soubor " + controller.getArdonDownloadedFile() + " neexistuje, nebo se ho nepodařilo otevřít.")));
+                    controller.appendTextToLog("Stažení XML feedu nebylo možno dokončit.");
+                }
+                controller.appendTextToLog("Zpracování XML feedu dodavatele Ardon dokončeno.");
+                Platform.runLater(() -> controller.getInfoMessage().setText("Připraven"));
+                controller.getProgressBar().setVisible(false);
+                controller.getBtnStartArdon().setDisable(false);
+                controller.getBtnStop().setDisable(true);
+                Main.getInstance().setProcessing(false);
+                return null;
+            }
+
+            @Override
+            protected void cancelled() {
+                try {
+                    processes.cancelProcess();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                controller.appendTextToLog("Zpracování XML feedu dodavatele Ardon zrušeno.");
+                Platform.runLater(() -> controller.getInfoMessage().setText("Připraven"));
+                controller.getProgressBar().setVisible(false);
+                controller.getBtnStartArdon().setDisable(false);
+                controller.getBtnStop().setDisable(true);
+                Main.getInstance().setProcessing(false);
+            }
+        };
+        taskExecutor.submit(currentTask);
+    }
+
+    public void downloadArdonImages(boolean processOnly) {
+        currentTask = new Task<>() {
+            @Override
+            protected Void call() {
+                Main.getInstance().setProcessing(true);
+                controller.appendTextToLog("Stahuji obrázky z XML feedu dodavatele ARDON Safety s.r.o.");
+                Platform.runLater(() -> controller.getInfoMessage().setText("Stahuji obrázky produktů Ardon"));
+                controller.getProgressBar().setVisible(true);
+                controller.getBtnStartArdon().setDisable(true);
+                controller.getBtnStop().setDisable(false);
+                if (!this.isCancelled()) {
+                    try {
+                        processes.loadImagesArdon(processOnly);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Platform.runLater(() -> Main.getInstance().showErrorDialog("Nelze stáhnout obrázky", "Nepodařilo se stáhnout obrázky produktů partnera Ardon:", e));
+                        controller.appendTextToLog("Stažení obrázků produktů nebylo možno dokončit.");
+                        controller.appendTextToLog(e.getLocalizedMessage());
+                    }
+                    controller.appendTextToLog("Stažení obrázků produktů a přepis adres obrázků v XML feedu dodavatele Ardon dokončeno.");
+                }
+                Platform.runLater(() -> controller.getInfoMessage().setText("Připraven"));
+                controller.getProgressBar().setVisible(false);
+                controller.getBtnStartArdon().setDisable(false);
+                controller.getBtnStop().setDisable(true);
+                Main.getInstance().setProcessing(false);
+                return null;
+            }
+
+            @Override
+            protected void cancelled() {
+                try {
+                    processes.cancelProcess();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                controller.appendTextToLog("Stažení obrázků produktů a přepis adres obrázků v XML feedu dodavatele Ardon zrušeno.");
+                Platform.runLater(() -> controller.getInfoMessage().setText("Připraven"));
+                controller.getProgressBar().setVisible(false);
+                controller.getBtnStartArdon().setDisable(false);
+                controller.getBtnStop().setDisable(true);
+                Main.getInstance().setProcessing(false);
+            }
+        };
+        taskExecutor.submit(currentTask);
+    }
+
+    private boolean checkFileExists(String path) {
+        File toCheck = new File(path);
+        return toCheck.exists();
     }
 }

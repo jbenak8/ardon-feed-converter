@@ -1,5 +1,6 @@
 package cz.jbenak.tezamv.ardonFeedConverter;
 
+import cz.jbenak.tezamv.ardonFeedConverter.dialogs.ShutdownQuestion;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -59,23 +60,24 @@ public class Main extends Application {
             stage.setTitle("TEZA MV feed converter (Ardon, Luma)");
             stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("app-icon-v3.png"))));
             stage.setResizable(false);
+            stage.setOnCloseRequest(windowEvent -> {
+                windowEvent.consume();
+                if (isProcessing) {
+                    ShutdownQuestion question = new ShutdownQuestion();
+                    if (question.showDialog()) {
+                        saveSettings();
+                        Platform.exit();
+                    }
+                } else {
+                    saveSettings();
+                    Platform.exit();
+                }
+            });
             stage.show();
         } catch (Exception e) {
             showErrorDialog("Program nelze spustit", "Nastala chyba při spouštění programu:", e);
             Platform.exit();
         }
-        /*
-        TODO:
-        1. windows close event listener
-        2. pokud proces běží dotaz na zastavení při zavírání
-        3. ukládání nastavení při zavření - hotovo
-         */
-    }
-
-    @Override
-    public void stop() throws Exception {
-        saveSettings();
-        super.stop();
     }
 
     public void showErrorDialog(String title, String header, Exception e) {
@@ -98,6 +100,8 @@ public class Main extends Application {
         appSettings.setProperty("ardon.upload.username", Utils.getStringEncryptor().decrypt(appSettings.getProperty("ardon.upload.username", "")));
         appSettings.setProperty("luma.upload.password", Utils.getStringEncryptor().decrypt(appSettings.getProperty("luma.upload.password", "")));
         appSettings.setProperty("luma.upload.username", Utils.getStringEncryptor().decrypt(appSettings.getProperty("luma.upload.username", "")));
+        appSettings.setProperty("ardon.upload.images.password", Utils.getStringEncryptor().decrypt(appSettings.getProperty("ardon.upload.images.password", "")));
+        appSettings.setProperty("ardon.upload.images.username", Utils.getStringEncryptor().decrypt(appSettings.getProperty("ardon.upload.images.username", "")));
     }
 
     private void saveSettings() {
@@ -107,6 +111,8 @@ public class Main extends Application {
         appSettings.setProperty("ardon.upload.username", Utils.getStringEncryptor().encrypt(appSettings.getProperty("ardon.upload.username")));
         appSettings.setProperty("luma.upload.password", Utils.getStringEncryptor().encrypt(appSettings.getProperty("luma.upload.password")));
         appSettings.setProperty("luma.upload.username", Utils.getStringEncryptor().encrypt(appSettings.getProperty("luma.upload.username")));
+        appSettings.setProperty("ardon.upload.images.password", Utils.getStringEncryptor().encrypt(appSettings.getProperty("ardon.upload.images.password", "")));
+        appSettings.setProperty("ardon.upload.images.username", Utils.getStringEncryptor().encrypt(appSettings.getProperty("ardon.upload.images.username", "")));
         try {
             try (FileOutputStream fos = new FileOutputStream("conf/app.properties")) {
                 appSettings.store(fos, null);

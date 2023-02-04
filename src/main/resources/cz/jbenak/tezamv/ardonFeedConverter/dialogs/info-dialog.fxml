@@ -54,7 +54,7 @@
             <Label fx:id="app" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
          </children>
       </GridPane>
-      <Label layoutX="22.0" layoutY="366.0" text="© Jan Benák, 2023, Licensováno pod licecní GPL" />
+      <Label layoutX="22.0" layoutY="366.0" text="© Jan Benák, 2023, Licensováno pod licecní GPL v2" />
       <MFXButton buttonType="RAISED" depthLevel="LEVEL1" layoutX="315.0" layoutY="390.0" onAction="#closedPressed" prefHeight="27.0" prefWidth="63.0" text="Zavřít" />
    </children>
 </AnchorPane>

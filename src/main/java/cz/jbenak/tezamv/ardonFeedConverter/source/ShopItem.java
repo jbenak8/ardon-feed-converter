@@ -55,8 +55,8 @@ public class ShopItem {
     private FileWrapper files;
     @XmlElement(name = "QUANTITY_IN_STOCK")
     private String quantityInStock;
-    @XmlElement(name = "AMOUNT_IN_STOCK")
-    private Double amountInStock;
+    @XmlElement(name = "AMOUNT_IN_STOCK", nillable = true)
+    private String amountInStock;
     @XmlElement(name = "CONNECT_AND_GO", nillable = true)
     private ProductWrapper connectAndGo;
 
@@ -204,11 +204,11 @@ public class ShopItem {
         this.quantityInStock = quantityInStock;
     }
 
-    public Double getAmountInStock() {
+    public String getAmountInStock() {
         return amountInStock;
     }
 
-    public void setAmountInStock(Double amountInStock) {
+    public void setAmountInStock(String amountInStock) {
         this.amountInStock = amountInStock;
     }
 

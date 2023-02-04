@@ -27,19 +27,8 @@ public class ArdonMapper {
         return output;
     }
 
-    private void deleteDuplicates() { //TODO přepracovat - udělat jiný equals a dát to do Hashsetu
+    private void deleteDuplicates() {
         HashSet<ShopItem> clean = new HashSet<>(input.getItems());
-        /*List<ShopItem> clean = input.getItems().stream().filter(shopItem -> {
-            int count = 0;
-            for (ShopItem itm : input.getItems()) {
-                if (itm.getItemCode().equals(shopItem.getItemCode())) {
-                    count++;
-                }
-            }
-            return count < 2;
-        }).toList();*/
-        System.out.println("Původně obsaženo: " + input.getItems().size());
-        System.out.println("Po odstranění duplicit:" + clean.size());
         input.setItems(clean.stream().toList());
     }
 
@@ -63,9 +52,13 @@ public class ArdonMapper {
             getFiles(source, itm);
             itm.setConnectedProductIds(getConnectedProducts(source.getConnectAndGo()));
             itm.setManufacturer("ARDON SAFETY s.r.o.");
-            itm.setInStock(source.getAmountInStock() > 0);
-            itm.setInStockAmount(source.getAmountInStock());
-            itm.setInStockType(source.getAmountInStock() > 0 ? "Skladem u dodavatele" : "na cestě");
+            double amountInStock = 0.0;
+            if (source.getAmountInStock() != null && source.getAmountInStock().matches("\\d+\\.\\d+")) {
+                amountInStock = Double.parseDouble(source.getAmountInStock());
+            }
+            itm.setInStock(amountInStock > 0);
+            itm.setInStockAmount(amountInStock);
+            itm.setInStockType(amountInStock > 0 ? "Skladem u dodavatele" : "na cestě");
             itm.setMeasureUnit(source.getQuantityInStock().substring(source.getQuantityInStock().length() - 2).trim().toLowerCase());
             items.add(itm);
         });

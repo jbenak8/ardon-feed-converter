@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<BorderPane onKeyPressed="#keyPressed" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.jbenak.tezamv.ardonFeedConverter.dialogs.UnpairedCatsController">
+   <top>
+      <HBox prefHeight="56.0" prefWidth="560.0" BorderPane.alignment="CENTER">
+         <children>
+            <FontIcon iconLiteral="fltfal-apps-list-24" iconSize="56">
+               <HBox.margin>
+                  <Insets right="20.0" />
+               </HBox.margin>
+            </FontIcon>
+            <Label fx:id="title" prefHeight="62.0" prefWidth="492.0" text="Nalezené nespárované kategorie dodavatele ${supplier}:" wrapText="true">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+         </children>
+         <BorderPane.margin>
+            <Insets left="20.0" right="20.0" top="20.0" />
+         </BorderPane.margin>
+      </HBox>
+   </top>
+   <bottom>
+      <GridPane BorderPane.alignment="CENTER">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <MFXButton onAction="#close" text="Zavřít" GridPane.columnIndex="1">
+               <graphic>
+                  <FontIcon iconColor="#a11111" iconLiteral="fltral-calendar-cancel-24" iconSize="24" />
+               </graphic>
+            </MFXButton>
+            <MFXButton onAction="#copyToClipboard" text="Kopírovat do schránky">
+               <graphic>
+                  <FontIcon iconLiteral="fltral-copy-24" iconSize="24" />
+               </graphic>
+            </MFXButton>
+         </children>
+         <BorderPane.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </BorderPane.margin>
+      </GridPane>
+   </bottom>
+   <center>
+      <TextArea fx:id="content" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets left="10.0" right="10.0" top="10.0" />
+         </BorderPane.margin>
+      </TextArea>
+   </center>
+</BorderPane>

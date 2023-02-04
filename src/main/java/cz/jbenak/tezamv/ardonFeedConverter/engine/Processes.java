@@ -92,6 +92,18 @@ public class Processes {
         Files.writeString(of, cdataCorrection);
     }
 
+    private Map<String, String> getCategoryMapping(String mappingConfig) throws Exception {
+        Map<String, String> catsMap = new HashMap<>();
+        try (Stream<String> stream = Files.lines(Paths.get(mappingConfig), StandardCharsets.UTF_8)) {
+            currentStream = stream;
+            stream.forEach(line -> {
+                String[] keyVal = line.split("=");
+                catsMap.put(keyVal[0].trim(), keyVal[1].trim());
+            });
+        }
+        return catsMap;
+    }
+
     public void loadArdon() throws Exception {
         cancelled = false;
         Platform.runLater(() -> controller.getInfoMessage().setText("Zpracovávám stažený XML feed Ardonu"));
@@ -99,14 +111,8 @@ public class Processes {
         ArdonMapper mapper = new ArdonMapper(unmarshallArdon());
         mapper.createOutput();
         TargetShop outputShop = mapper.getTarget();
-        Map<String, String> catsMap = new HashMap<>();
-        try (Stream<String> stream = Files.lines(Paths.get("conf/ardon-categories.txt"), StandardCharsets.UTF_8)) {
-            currentStream = stream;
-            stream.forEach(line -> {
-                String[] keyVal = line.split("=");
-                catsMap.put(keyVal[0].trim(), keyVal[1].trim());
-            });
-        }
+        Map<String, String> catsMap = getCategoryMapping("conf/ardon-categories.txt");
+        //TODO FTP upload
         if (!cancelled) {
             outputShop.getItems().forEach(itm -> itm.setCategories(catsMap.get(itm.getCategories())));
             controller.appendTextToLog("Bude uloženo " + outputShop.getItems().size() + " položek.");
@@ -115,25 +121,61 @@ public class Processes {
         }
     }
 
+    public HashSet<String> getUnpairedCatsArdon() throws Exception {
+        cancelled = false;
+        final HashSet<String> unpaired = new HashSet<>();
+        Platform.runLater(() -> controller.getInfoMessage().setText("Načítám stažený XML feed Ardonu"));
+        controller.appendTextToLog("Načítám stažený XML feed dodavatele Ardon pro zjištění nespárovaných kategorií.");
+        ArdonMapper mapper = new ArdonMapper(unmarshallArdon());
+        mapper.createOutput();
+        TargetShop outputShop = mapper.getTarget();
+        Platform.runLater(() -> controller.getInfoMessage().setText("Načítám párování kategorií Ardonu"));
+        controller.appendTextToLog("Načítám nastavení párování kategorií pro dodavatele ArdonSafety s.r.o.");
+        Map<String, String> catsMap = getCategoryMapping("conf/ardon-categories.txt");
+        Set<String> theirCats = catsMap.keySet();
+        Platform.runLater(() -> controller.getInfoMessage().setText("Připravuji seznam nespárovaných kategorií Ardonu"));
+        controller.appendTextToLog("Připravuji seznam nespárovaných kategorií pro dodavatele Ardon Safety s.r.o.");
+        outputShop.getItems().forEach(itm -> {
+            if (!theirCats.contains(itm.getCategories())) {
+                unpaired.add(itm.getCategories());
+            }
+        });
+        return unpaired;
+    }
+
     public void loadLuma() throws Exception {
         cancelled = false;
         controller.appendTextToLog("Zahajuji zpracování XML feedu dodavatele Luma.");
         Platform.runLater(() -> controller.getInfoMessage().setText("Zpracovávám XML feed."));
         LumaShop shop = unmarshallLuma();
-        Map<String, String> catsMap = new HashMap<>();
-        try (Stream<String> stream = Files.lines(Paths.get("conf/luma-categories.txt"), StandardCharsets.UTF_8)) {
-            currentStream = stream;
-            stream.forEach(line -> {
-                String[] keyVal = line.split("=");
-                catsMap.put(keyVal[0].trim(), keyVal[1].trim());
-            });
-        }
+        Map<String, String> catsMap = getCategoryMapping("conf/luma-categories.txt");
+        //TODO FTP upload
         if (!cancelled) {
             shop.getItems().forEach(itm -> itm.setCategory(catsMap.get(itm.getCategory())));
             controller.appendTextToLog("Bude uloženo " + shop.getItems().size() + " položek.");
             marshallLuma(shop);
             correctCData(controller.getLumaProcessedFile());
         }
+    }
+
+    public HashSet<String> getUnpairedCatsLuma() throws Exception {
+        cancelled = false;
+        final HashSet<String> unpaired = new HashSet<>();
+        Platform.runLater(() -> controller.getInfoMessage().setText("Načítám stažený XML feed Lumy"));
+        controller.appendTextToLog("Načítám stažený XML feed dodavatele Luma pro zjištění nespárovaných kategorií.");
+        LumaShop shop = unmarshallLuma();
+        Platform.runLater(() -> controller.getInfoMessage().setText("Načítám párování kategorií Lumy"));
+        controller.appendTextToLog("Načítám nastavení párování kategorií pro dodavatele Luma Trading s.r.o.");
+        Map<String, String> catsMap = getCategoryMapping("conf/luma-categories.txt");
+        Set<String> theirCats = catsMap.keySet();
+        Platform.runLater(() -> controller.getInfoMessage().setText("Připravuji seznam nespárovaných kategorií Lumy"));
+        controller.appendTextToLog("Připravuji seznam nespárovaných kategorií pro dodavatele Luma Trading s.r.o.");
+        shop.getItems().forEach(itm -> {
+            if (!theirCats.contains(itm.getCategory())) {
+                unpaired.add(itm.getCategory());
+            }
+        });
+        return unpaired;
     }
 
     public void loadImagesArdon(boolean processOnly) throws Exception {

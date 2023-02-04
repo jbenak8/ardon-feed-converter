@@ -137,7 +137,7 @@
                                           <FontIcon iconLiteral="fltrmz-text-bullet-list-24" iconSize="24" />
                                        </graphic>
                                     </MFXButton>
-                                    <MFXButton buttonType="RAISED" depthLevel="LEVEL1" text="Zobrazit nespárovatelné kategorie">
+                                    <MFXButton buttonType="RAISED" depthLevel="LEVEL1" onAction="#showUnpairedCatsArdon" text="Zobrazit nespárovatelné kategorie">
                                        <graphic>
                                           <FontIcon iconLiteral="fltrmz-text-bullet-list-square-warning-24" iconSize="24" />
                                        </graphic>
@@ -163,7 +163,7 @@
                                                 <Insets top="10.0" />
                                             </VBox.margin>
                                         </HBox>
-                              <HBox alignment="CENTER_RIGHT" prefHeight="79.0" prefWidth="1080.0">
+                              <HBox alignment="CENTER" prefHeight="79.0" prefWidth="1080.0">
                                  <children>
                                     <MFXButton buttonType="RAISED" depthLevel="LEVEL1" onAction="#openCredentialsDialogImagesUpload" text="Změnit přístupové údaje k FTP pro upload obrázků">
                                        <graphic>
@@ -256,7 +256,7 @@
                                           <Insets right="10.0" />
                                        </HBox.margin>
                                     </MFXButton>
-                                    <MFXButton buttonType="RAISED" depthLevel="LEVEL1" text="Zobrazit nespárovatelné kategorie">
+                                    <MFXButton buttonType="RAISED" depthLevel="LEVEL1" onAction="#showUnpairedCatsLuma" text="Zobrazit nespárovatelné kategorie">
                                        <HBox.margin>
                                           <Insets right="50.0" />
                                        </HBox.margin>

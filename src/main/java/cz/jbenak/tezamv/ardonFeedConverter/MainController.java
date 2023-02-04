@@ -254,6 +254,16 @@ public class MainController implements Initializable {
     }
 
     @FXML
+    private void showUnpairedCatsArdon() {
+        engine.showUnpairedCatsArdon();
+    }
+
+    @FXML
+    private void showUnpairedCatsLuma() {
+        engine.showUnpairedCatsLuma();
+    }
+
+    @FXML
     private void stopProcess() {
         engine.getCurrentTask().cancel(true);
     }

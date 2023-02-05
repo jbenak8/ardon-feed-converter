@@ -1,0 +1,1 @@
+java --module-path lib/fx --add-modules javafx.controls,javafx.fxml -jar ardon-feed-converter.jar

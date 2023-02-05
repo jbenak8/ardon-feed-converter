@@ -85,7 +85,7 @@
         <dependency>
             <groupId>io.github.palexdev</groupId>
             <artifactId>materialfx</artifactId>
-            <version>11.13.8</version>
+            <version>11.13.9</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.openjfx</groupId>
@@ -149,6 +149,21 @@
                             <overWriteIfNewer>true</overWriteIfNewer>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>copy-libs-fx</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/DIST/lib/fx</outputDirectory>
+                            <excludeClassifiers>${javafx.excludeClassifier}</excludeClassifiers>
+                            <includeGroupIds>org.openjfx</includeGroupIds>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
@@ -183,6 +198,9 @@
                                 <resource>
                                     <directory>${project.basedir}/scripts</directory>
                                 </resource>
+                                <resource>
+                                    <directory>${project.basedir}/root</directory>
+                                </resource>
                             </resources>
                         </configuration>
                     </execution>
@@ -216,6 +234,63 @@
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>cz.jbenak.tezamv.ardonFeedConverter.Main</mainClass>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.akathist.maven.plugins.launch4j</groupId>
+                <artifactId>launch4j-maven-plugin</artifactId>
+                <version>2.3.2</version>
+                <executions>
+                    <execution>
+                        <id>l4j-gui</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>launch4j</goal>
+                        </goals>
+                        <configuration>
+                            <dontWrapJar>true</dontWrapJar>
+                            <headerType>gui</headerType>
+                            <jar>ardon-feed-converter.jar</jar>
+                            <outfile>${project.build.directory}/DIST/FeedConverter.exe</outfile>
+                            <errTitle>Pro běh programu je nutné mít nainstalované Open JDK aspoň ve verzi 19</errTitle>
+                            <chdir>.</chdir>
+                            <priority>normal</priority>
+                            <downloadUrl>https://jdk.java.net/19/</downloadUrl>
+                            <stayAlive>false</stayAlive>
+                            <restartOnCrash>false</restartOnCrash>
+                            <icon>${project.build.directory}/DIST/app-icon.ico</icon>
+                            <jre>
+                                <path>%JAVA_HOME%;%PATH%</path>
+                                <requiresJdk>false</requiresJdk>
+                                <requires64Bit>true</requires64Bit>
+                                <minVersion>19</minVersion>
+                                <opts>
+                                    <opt>--module-path lib/fx</opt>
+                                    <opt>--add-modules javafx.controls,javafx.fxml</opt>
+                                </opts>
+                            </jre>
+                            <versionInfo>
+                                <fileVersion>1.0.0.0</fileVersion>
+                                <txtFileVersion>1.0.0.0</txtFileVersion>
+                                <fileDescription>Provádí zpracování XML feedů pro společnost TEZA MV s.r.o dodavatelů Ardon Safety s.r.o. a Luma Trading s.r.o.     </fileDescription>
+                                <copyright>Jan Benák 2023</copyright>
+                                <productVersion>1.0.0.0</productVersion>
+                                <txtProductVersion>1.0.0.0</txtProductVersion>
+                                <productName>TEZA Feed converter</productName>
+                                <companyName>JAn Benák</companyName>
+                                <internalName>cz.jbenak.tezamv.ardonFeedConverter</internalName>
+                                <originalFilename>FeedConverter.exe</originalFilename>
+                                <language>CZECH</language>
+                            </versionInfo>
+                            <messages>
+                                <startupErr>Nastala chyba při spuštění aplikace.</startupErr>
+                                <jreNotFoundErr>Tato aplikace vyžaduje instalovanou Open JDK aspoň ve verzi 19.</jreNotFoundErr>
+                                <jreVersionErr>Tato aplikace vyžaduje instalovanou Open JDK aspoň ve verzi 19.</jreVersionErr>
+                                <launcherErr>Nastala chyba při spouštění Javy. Prosím, zkontrolujte instalaci.</launcherErr>
+                                <instanceAlreadyExistsMsg>Aplikace je již spuštěna.</instanceAlreadyExistsMsg>
+                            </messages>
                         </configuration>
                     </execution>
                 </executions>

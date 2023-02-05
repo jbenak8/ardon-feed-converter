@@ -1,6 +1,8 @@
 package cz.jbenak.tezamv.ardonFeedConverter;
 
 import cz.jbenak.tezamv.ardonFeedConverter.dialogs.ShutdownQuestion;
+import io.github.palexdev.materialfx.i18n.I18N;
+import io.github.palexdev.materialfx.i18n.Language;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -52,6 +54,7 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) {
         try {
+            I18N.setLanguage(Language.CZECH);
             loadSettings();
             mainStage = stage;
             FXMLLoader loader = new FXMLLoader(Main.class.getResource("main.fxml"));

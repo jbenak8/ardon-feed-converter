@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch4jConfig>
+  <dontWrapJar>true</dontWrapJar>
+  <headerType>gui</headerType>
+  <jar>ardon-feed-converter.jar</jar>
+  <outfile>C:\IDEA_PROJEKTY\ardon-feed-converter\target\DIST\FeedConverter.exe</outfile>
+  <errTitle>Pro běh programu je nutné mít nainstalované Open JDK aspoň ve verzi 19</errTitle>
+  <cmdLine></cmdLine>
+  <chdir>.</chdir>
+  <priority>normal</priority>
+  <downloadUrl>https://jdk.java.net/19/</downloadUrl>
+  <supportUrl></supportUrl>
+  <stayAlive>false</stayAlive>
+  <restartOnCrash>false</restartOnCrash>
+  <manifest></manifest>
+  <icon>C:\IDEA_PROJEKTY\ardon-feed-converter\target\DIST\app-icon.ico</icon>
+  <jre>
+    <path>%JAVA_HOME%;%PATH%</path>
+    <requiresJdk>false</requiresJdk>
+    <requires64Bit>true</requires64Bit>
+    <minVersion>19</minVersion>
+    <maxVersion></maxVersion>
+    <opt>--module-path lib/fx</opt>
+    <opt>--add-modules javafx.controls,javafx.fxml</opt>
+  </jre>
+  <versionInfo>
+    <fileVersion>1.0.0.0</fileVersion>
+    <txtFileVersion>1.0.0.0</txtFileVersion>
+    <fileDescription>Provádí zpracování XML feedů pro společnost TEZA MV s.r.o dodavatelů Ardon Safety s.r.o. a Luma Trading s.r.o.     </fileDescription>
+    <copyright>Jan Benák 2023</copyright>
+    <productVersion>1.0.0.0</productVersion>
+    <txtProductVersion>1.0.0.0</txtProductVersion>
+    <productName>TEZA Feed converter</productName>
+    <companyName>Jan Benák</companyName>
+    <internalName>cz.jbenak.tezamv.ardonFeedConverter</internalName>
+    <originalFilename>FeedConverter.exe</originalFilename>
+    <trademarks></trademarks>
+    <language>CZECH</language>
+  </versionInfo>
+  <messages>
+    <startupErr>Nastala chyba při spuštění aplikace.</startupErr>
+    <jreNotFoundErr>Tato aplikace vyžaduje instalovanou Open JDK aspoň ve verzi 19.</jreNotFoundErr>
+    <jreVersionErr>Tato aplikace vyžaduje instalovanou Open JDK aspoň ve verzi 19.</jreVersionErr>
+    <launcherErr>Nastala chyba při spouštění Javy. Prosím, zkontrolujte instalaci.</launcherErr>
+    <instanceAlreadyExistsMsg>Aplikace je již spuštěna.</instanceAlreadyExistsMsg>
+  </messages>
+</launch4jConfig>

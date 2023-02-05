@@ -38,9 +38,9 @@ public class MainController implements Initializable {
     @FXML
     private MFXButton btnStop;
     @FXML
-    private MFXCheckbox loadFeedArdon;
+    private MFXCheckbox uploadFeedArdon;
     @FXML
-    private MFXCheckbox loadFeedLuma;
+    private MFXCheckbox uploadFeedLuma;
     @FXML
     private TextField feedUrlArdon;
     @FXML
@@ -71,6 +71,10 @@ public class MainController implements Initializable {
     private MFXCheckbox notDownloadImagesArdon;
     @FXML
     private TextField uploadImagesUrlArdon;
+    @FXML
+    private TextField uploadFeedArdonRemoteDir;
+    @FXML
+    private TextField uploadFeedLumaRemoteDir;
     private final Engine engine = new Engine(this);
 
     @FXML
@@ -142,6 +146,14 @@ public class MainController implements Initializable {
         return imagesUrlReplaceArdon.getText().trim();
     }
 
+    public String getArdonUploadFeedUrl() {
+        return feedUploadArdon.getText().trim();
+    }
+
+    public String getLumaUploadFeedUrl() {
+        return feedUploadLuma.getText().trim();
+    }
+
     public MFXButton getBtnStop() {
         return btnStop;
     }
@@ -152,6 +164,26 @@ public class MainController implements Initializable {
 
     public MFXButton getBtnStartLuma() {
         return btnStartLuma;
+    }
+
+    public boolean uploadFeedArdon() {
+        return uploadFeedArdon.isSelected();
+    }
+
+    public boolean uploadFeedLuma() {
+        return uploadFeedLuma.isSelected();
+    }
+
+    public String getArdonUploadFeedRemoteDir() {
+        return uploadFeedArdonRemoteDir.getText().trim();
+    }
+
+    public String getLumaUploadFeedRemoteDir() {
+        return uploadFeedLumaRemoteDir.getText().trim();
+    }
+
+    public String getImagesUrlUploadArdon() {
+        return uploadImagesUrlArdon.getText().trim();
     }
 
     private void openSaveDialog(TextField targetField, boolean directory, String suggestedFileName) {
@@ -264,6 +296,11 @@ public class MainController implements Initializable {
     }
 
     @FXML
+    private void uploadImagesArdon() {
+        engine.uploadArdonImages();
+    }
+
+    @FXML
     private void stopProcess() {
         engine.getCurrentTask().cancel(true);
     }
@@ -320,12 +357,14 @@ public class MainController implements Initializable {
         settings.setProperty("ardon.outputFile", processedFileArdon.getText().trim());
         settings.setProperty("ardon.imageFolder", imagesFolderArdon.getText().trim());
         settings.setProperty("ardon.uploadUrl", feedUploadArdon.getText().trim());
-        settings.setProperty("ardon.uploadEnabled", loadFeedArdon.isSelected() ? "true" : "false");
-        settings.setProperty("luma.uploadEnabled", loadFeedLuma.isSelected() ? "true" : "false");
+        settings.setProperty("ardon.uploadEnabled", uploadFeedArdon.isSelected() ? "true" : "false");
+        settings.setProperty("luma.uploadEnabled", uploadFeedLuma.isSelected() ? "true" : "false");
         settings.setProperty("ardon.imagesPath", imagesUrlArdon.getText().trim());
         settings.setProperty("ardon.imagesPath.replaceTo", imagesUrlReplaceArdon.getText().trim());
         settings.setProperty("ardon.notDownloadImages", notDownloadImagesArdon.isSelected() ? "true" : "false");
         settings.setProperty("ardon.upload.images.url", uploadImagesUrlArdon.getText().trim());
+        settings.setProperty("ardon.uploadUrl.remoteDir", uploadFeedArdonRemoteDir.getText().trim());
+        settings.setProperty("luma.uploadUrl.remoteDir", uploadFeedLumaRemoteDir.getText().trim());
     }
 
     @Override
@@ -343,11 +382,13 @@ public class MainController implements Initializable {
         downloadedFileLuma.setText(Main.getInstance().getAppSettings().getProperty("luma.inputFile"));
         processedFileLuma.setText(Main.getInstance().getAppSettings().getProperty("luma.outputFile"));
         feedUploadLuma.setText(Main.getInstance().getAppSettings().getProperty("luma.uploadUrl"));
-        loadFeedArdon.setSelected(Boolean.parseBoolean(Main.getInstance().getAppSettings().getProperty("ardon.uploadEnabled", "false")));
-        loadFeedLuma.setSelected(Boolean.parseBoolean(Main.getInstance().getAppSettings().getProperty("luma.uploadEnabled", "false")));
+        uploadFeedArdon.setSelected(Boolean.parseBoolean(Main.getInstance().getAppSettings().getProperty("ardon.uploadEnabled", "false")));
+        uploadFeedLuma.setSelected(Boolean.parseBoolean(Main.getInstance().getAppSettings().getProperty("luma.uploadEnabled", "false")));
         notDownloadImagesArdon.setSelected(Boolean.parseBoolean(Main.getInstance().getAppSettings().getProperty("ardon.notDownloadImages", "false")));
         imagesUrlArdon.setText(Main.getInstance().getAppSettings().getProperty("ardon.imagesPath"));
         imagesUrlReplaceArdon.setText(Main.getInstance().getAppSettings().getProperty("ardon.imagesPath.replaceTo"));
         uploadImagesUrlArdon.setText(Main.getInstance().getAppSettings().getProperty("ardon.upload.images.url"));
+        uploadFeedArdonRemoteDir.setText(Main.getInstance().getAppSettings().getProperty("ardon.uploadUrl.remoteDir"));
+        uploadFeedLumaRemoteDir.setText(Main.getInstance().getAppSettings().getProperty("luma.uploadUrl.remoteDir"));
     }
 }

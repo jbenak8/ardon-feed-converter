@@ -43,7 +43,7 @@
                     <content>
                         <BorderPane layoutX="111.0" layoutY="76.0" prefHeight="222.0" prefWidth="1004.0">
                             <center>
-                                <VBox prefHeight="344.0" prefWidth="1080.0" BorderPane.alignment="CENTER">
+                                <VBox prefHeight="397.0" prefWidth="1080.0" BorderPane.alignment="CENTER">
                                     <children>
                                         <GridPane prefHeight="251.0" prefWidth="1080.0">
                                             <columnConstraints>
@@ -56,7 +56,6 @@
                                                 <RowConstraints minHeight="10.0" prefHeight="45.0" vgrow="SOMETIMES" />
                                                 <RowConstraints minHeight="10.0" prefHeight="45.0" vgrow="SOMETIMES" />
                                                 <RowConstraints minHeight="10.0" prefHeight="45.0" vgrow="SOMETIMES" />
-                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                             </rowConstraints>
                                             <children>
@@ -64,12 +63,10 @@
                                                 <Label prefHeight="42.0" prefWidth="172.0" text="Uložit stažený feed jako:      (bude použito jako vstupní data)" wrapText="true" GridPane.rowIndex="1" />
                                                 <Label text="Uložit zpracovaný feed jako:" GridPane.rowIndex="2" />
                                                 <Label text="Stáhnout obrázky do složky:" GridPane.rowIndex="3" />
-                                                <Label text="Nahrát feed do (přes FTP):" GridPane.rowIndex="4" />
                                                 <TextField fx:id="feedUrlArdon" GridPane.columnIndex="1" />
                                                 <TextField fx:id="downloadedFileArdon" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                 <TextField fx:id="processedFileArdon" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                 <TextField fx:id="imagesFolderArdon" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                <TextField fx:id="feedUploadArdon" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                                                 <FontIcon />
                                                 <MFXButton buttonType="RAISED" depthLevel="LEVEL1" onAction="#selectProcessedFeedArdon" prefWidth="125.0" text="Uložit jako..." GridPane.columnIndex="2" GridPane.rowIndex="2">
                                                     <graphic>
@@ -86,37 +83,46 @@
                                                         <FontIcon iconLiteral="fltral-folder-open-24" iconSize="24" />
                                                     </graphic>
                                                 </MFXButton>
-                                    <Label text="URL pro FTP upload obrázků:" GridPane.rowIndex="5" />
-                                    <TextField fx:id="uploadImagesUrlArdon" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                    <Label text="URL pro FTP upload obrázků:" GridPane.rowIndex="4" />
+                                    <TextField fx:id="uploadImagesUrlArdon" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                                             </children>
                                             <VBox.margin>
                                                 <Insets top="10.0" />
                                             </VBox.margin>
                                         </GridPane>
-                              <GridPane prefHeight="34.0" prefWidth="854.0">
+                              <GridPane prefHeight="70.0" prefWidth="1080.0">
                                 <columnConstraints>
                                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="246.0" minWidth="10.0" prefWidth="218.0" />
                                     <ColumnConstraints hgrow="SOMETIMES" maxWidth="491.0" minWidth="10.0" prefWidth="437.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="289.0" minWidth="10.0" prefWidth="97.0" />
+                                    <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="289.0" minWidth="10.0" prefWidth="97.0" />
                                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="355.0" minWidth="10.0" prefWidth="328.0" />
                                 </columnConstraints>
                                 <rowConstraints>
-                                  <RowConstraints minHeight="45.0" prefHeight="45.0" vgrow="SOMETIMES" />
+                                  <RowConstraints maxHeight="40.0" minHeight="36.0" prefHeight="36.0" vgrow="SOMETIMES" />
+                                    <RowConstraints maxHeight="54.0" minHeight="36.0" prefHeight="36.0" vgrow="SOMETIMES" />
                                 </rowConstraints>
                                  <children>
                                     <Label text="Umístění obrázků ve feedu:" />
                                     <Label text="Nahradit za:" GridPane.columnIndex="2">
                                        <GridPane.margin>
-                                          <Insets left="20.0" />
+                                          <Insets right="10.0" />
                                        </GridPane.margin>
                                     </Label>
                                     <TextField fx:id="imagesUrlArdon" GridPane.columnIndex="1" />
                                     <TextField fx:id="imagesUrlReplaceArdon" maxWidth="166.0" prefHeight="25.0" prefWidth="121.0" GridPane.columnIndex="3" />
+                                                <Label text="Nahrát feed do (přes FTP):" GridPane.rowIndex="1" />
+                                                <TextField fx:id="feedUploadArdon" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                    <Label text="Složka na FTP:" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                       <GridPane.margin>
+                                          <Insets right="10.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <TextField fx:id="uploadFeedArdonRemoteDir" maxWidth="166.0" prefWidth="121.0" GridPane.columnIndex="3" GridPane.rowIndex="1" />
                                  </children>
                               </GridPane>
                                         <HBox alignment="CENTER_LEFT" prefHeight="56.0" prefWidth="1004.0">
                                             <children>
-                                                <MFXCheckbox fx:id="loadFeedArdon" text="Nahrávat feed">
+                                                <MFXCheckbox fx:id="uploadFeedArdon" text="Nahrávat feed">
                                                     <HBox.margin>
                                                         <Insets right="10.0" />
                                                     </HBox.margin>
@@ -163,7 +169,7 @@
                                                 <Insets top="10.0" />
                                             </VBox.margin>
                                         </HBox>
-                              <HBox alignment="CENTER" prefHeight="79.0" prefWidth="1080.0">
+                              <HBox alignment="CENTER" prefHeight="116.0" prefWidth="1080.0">
                                  <children>
                                     <MFXButton buttonType="RAISED" depthLevel="LEVEL1" onAction="#openCredentialsDialogImagesUpload" text="Změnit přístupové údaje k FTP pro upload obrázků">
                                        <graphic>
@@ -173,7 +179,7 @@
                                           <Insets right="10.0" />
                                        </HBox.margin>
                                     </MFXButton>
-                                    <MFXButton buttonType="RAISED" depthLevel="LEVEL1" text="Nahrát obrázky na FTP">
+                                    <MFXButton buttonType="RAISED" depthLevel="LEVEL1" onAction="#uploadImagesArdon" text="Nahrát obrázky na FTP">
                                        <graphic>
                                           <FontIcon iconLiteral="fltrmz-upload-24" iconSize="24" />
                                        </graphic>
@@ -206,17 +212,14 @@
                                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                 <RowConstraints minHeight="10.0" prefHeight="45.0" vgrow="SOMETIMES" />
                                                 <RowConstraints minHeight="10.0" prefHeight="45.0" vgrow="SOMETIMES" />
-                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                             </rowConstraints>
                                             <children>
                                                 <Label text="URL XML feedu:" />
                                                 <Label prefHeight="42.0" prefWidth="172.0" text="Uložit stažený feed jako:      (bude použito jako vstupní data)" wrapText="true" GridPane.rowIndex="1" />
                                                 <Label text="Uložit zpracovaný feed jako:" GridPane.rowIndex="2" />
-                                                <Label text="Nahrát feed do (přes FTP):" GridPane.rowIndex="3" />
                                                 <TextField fx:id="feedUrlLuma" GridPane.columnIndex="1" />
                                                 <TextField fx:id="downloadedFileLuma" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                 <TextField fx:id="processedFileLuma" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                <TextField fx:id="feedUploadLuma" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                                 <FontIcon />
                                                 <MFXButton buttonType="RAISED" depthLevel="LEVEL1" onAction="#selectProcessedFeedLuma" prefWidth="125.0" text="Uložit jako..." GridPane.columnIndex="2" GridPane.rowIndex="2">
                                                     <graphic>
@@ -233,9 +236,30 @@
                                                 <Insets top="10.0" />
                                             </VBox.margin>
                                         </GridPane>
+                              <GridPane>
+                                <columnConstraints>
+                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="225.0" minWidth="10.0" prefWidth="225.0" />
+                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="437.0" minWidth="10.0" prefWidth="437.0" />
+                                    <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="200.0" minWidth="10.0" prefWidth="94.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="324.0" minWidth="10.0" prefWidth="324.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                                <Label text="Nahrát feed do (přes FTP):" />
+                                                <TextField fx:id="feedUploadLuma" GridPane.columnIndex="1" />
+                                    <TextField fx:id="uploadFeedLumaRemoteDir" maxWidth="155.0" GridPane.columnIndex="3" />
+                                    <Label text="Složka na FTP:" GridPane.columnIndex="2">
+                                       <GridPane.margin>
+                                          <Insets right="10.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                 </children>
+                              </GridPane>
                                         <HBox alignment="CENTER_LEFT" prefHeight="49.0" prefWidth="1004.0">
                                             <children>
-                                                <MFXCheckbox fx:id="loadFeedLuma" text="Nahrávat feed">
+                                                <MFXCheckbox fx:id="uploadFeedLuma" text="Nahrávat feed">
                                                     <HBox.margin>
                                                         <Insets right="10.0" />
                                                     </HBox.margin>
@@ -290,7 +314,7 @@
         </TabPane>
     </center>
     <bottom>
-        <VBox prefHeight="272.0" prefWidth="1080.0" BorderPane.alignment="CENTER">
+        <VBox prefHeight="266.0" prefWidth="1080.0" BorderPane.alignment="CENTER">
             <BorderPane.margin>
                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
             </BorderPane.margin>

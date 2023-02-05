@@ -11,6 +11,7 @@ module ardon.feed.converter {
     requires org.kordamp.ikonli.fluentui;
     requires MaterialFX;
     requires jasypt;
+    requires org.apache.commons.net;
 
     exports cz.jbenak.tezamv.ardonFeedConverter;
     exports cz.jbenak.tezamv.ardonFeedConverter.dialogs;

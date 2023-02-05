@@ -7,7 +7,6 @@ import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -15,12 +14,10 @@ import javafx.stage.StageStyle;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Engine {
-    //TODO: Vypsat nezařazené kategorie (ty, pro které nebylo nalezeno párování)
 
     private final MainController controller;
     private final Processes processes;
@@ -334,6 +331,42 @@ public class Engine {
                 Platform.runLater(() -> controller.getInfoMessage().setText("Připraven"));
                 controller.getProgressBar().setVisible(false);
                 controller.getBtnStartArdon().setDisable(false);
+                controller.getBtnStop().setDisable(true);
+                Main.getInstance().setProcessing(false);
+            }
+        };
+        taskExecutor.submit(currentTask);
+    }
+
+    public void uploadArdonImages() {
+        currentTask = new Task<>() {
+            @Override
+            protected Void call() {
+                Main.getInstance().setProcessing(true);
+                controller.getProgressBar().setVisible(true);
+                controller.getBtnStartLuma().setDisable(true);
+                controller.getBtnStop().setDisable(false);
+                processes.uploadImagesArdon();
+                controller.appendTextToLog("Upload obrázků dodavatele Ardon dokončen.");
+                Platform.runLater(() -> controller.getInfoMessage().setText("Připraven"));
+                controller.getProgressBar().setVisible(false);
+                controller.getBtnStartLuma().setDisable(false);
+                controller.getBtnStop().setDisable(true);
+                Main.getInstance().setProcessing(false);
+                return null;
+            }
+
+            @Override
+            protected void cancelled() {
+                try {
+                    processes.cancelProcess();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                controller.appendTextToLog("Upload obrázků dodavatele Ardon zrušen.");
+                Platform.runLater(() -> controller.getInfoMessage().setText("Připraven"));
+                controller.getProgressBar().setVisible(false);
+                controller.getBtnStartLuma().setDisable(false);
                 controller.getBtnStop().setDisable(true);
                 Main.getInstance().setProcessing(false);
             }

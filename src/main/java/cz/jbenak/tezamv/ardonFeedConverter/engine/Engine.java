@@ -55,6 +55,9 @@ public class Engine {
                     controller.appendTextToLog("Stažení XML feedu nebylo možno dokončit.");
                     controller.appendTextToLog(e.getLocalizedMessage());
                 }
+                finally {
+                    processes.closeStream();
+                }
                 controller.appendTextToLog("Stažení XML feedu dodavatele Luma dokončeno.");
                 if (checkFileExists(controller.getLumaDownloadedFile())) {
                     try {
@@ -180,6 +183,8 @@ public class Engine {
                         Platform.runLater(() -> Main.getInstance().showErrorDialog("Nelze stáhnout feed", "Nepodařilo se stáhnout XML feed partnera Ardon:", e));
                         controller.appendTextToLog("Stažení XML feedu nebylo možno dokončit.");
                         controller.appendTextToLog(e.getLocalizedMessage());
+                    } finally {
+                        processes.closeStream();
                     }
                     controller.appendTextToLog("Stažení XML feedu dodavatele Ardon dokončeno.");
                 }

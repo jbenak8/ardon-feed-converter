@@ -54,6 +54,10 @@ public class Processes {
         cancelled = true;
     }
 
+    public void closeStream() {
+        currentStream.close();
+    }
+
     public void downloadFile(String fileUrl, String destinationFile) throws Exception {
         currentInputStream = new URL(fileUrl).openStream();
         Files.copy(currentInputStream, Paths.get(destinationFile), StandardCopyOption.REPLACE_EXISTING);
@@ -270,6 +274,8 @@ public class Processes {
                     } catch (IOException e) {
                         //Optional - by ardon are most common malformed URL. e.printStackTrace();
                         controller.appendTextToLog("Nemohu stáhnout: " + img + ":\n" + e.getLocalizedMessage());
+                    } finally {
+                        closeStream();
                     }
                     index++;
                 } else {

@@ -18,13 +18,13 @@
 <?import javafx.scene.layout.VBox?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<BorderPane prefHeight="812.0" prefWidth="1100.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.jbenak.tezamv.ardonFeedConverter.MainController">
+<BorderPane prefHeight="700.0" prefWidth="1100.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.jbenak.tezamv.ardonFeedConverter.MainController">
     <top>
-        <HBox alignment="CENTER_RIGHT" prefHeight="66.0" prefWidth="1024.0" BorderPane.alignment="CENTER">
+        <HBox alignment="CENTER_RIGHT" prefHeight="21.0" prefWidth="1080.0" BorderPane.alignment="CENTER">
             <children>
                 <MFXButton depthLevel="LEVEL5" onAction="#openInfoDialog" text=" ">
                     <graphic>
-                        <FontIcon iconLiteral="fltral-info-24" iconSize="48" selectionFill="#ffffff00" />
+                        <FontIcon iconLiteral="fltral-info-24" iconSize="32" selectionFill="#ffffff00" />
                     </graphic>
                <tooltip>
                   <Tooltip text="Zobrazit info o aplikaci" />
@@ -37,7 +37,7 @@
         </HBox>
     </top>
     <center>
-        <TabPane maxHeight="429.0" prefHeight="429.0" prefWidth="1080.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+        <TabPane maxHeight="430.0" prefHeight="430.0" prefWidth="1080.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
             <tabs>
                 <Tab text="Ardon">
                     <content>
@@ -314,7 +314,7 @@
         </TabPane>
     </center>
     <bottom>
-        <VBox prefHeight="266.0" prefWidth="1080.0" BorderPane.alignment="CENTER">
+        <VBox prefHeight="194.0" prefWidth="1080.0" BorderPane.alignment="CENTER">
             <BorderPane.margin>
                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
             </BorderPane.margin>
@@ -341,7 +341,7 @@
                         <Insets bottom="10.0" />
                     </VBox.margin>
                 </GridPane>
-            <HBox prefHeight="100.0" prefWidth="200.0">
+            <HBox prefHeight="51.0" prefWidth="1080.0">
                <children>
                       <MFXButton buttonType="RAISED" depthLevel="LEVEL1" onAction="#copyLogToClipboard" text="Kopírovat protokol aplikace:">
                           <graphic>
@@ -358,7 +358,7 @@
                   </MFXButton>
                </children>
             </HBox>
-                <TextArea fx:id="logView" editable="false" prefHeight="213.0" prefWidth="1080.0" />
+                <TextArea fx:id="logView" editable="false" prefHeight="90.0" prefWidth="1080.0" />
             </children>
         </VBox>
     </bottom>

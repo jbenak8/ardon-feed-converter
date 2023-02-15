@@ -297,7 +297,7 @@ public class Processes {
             }
             if (client.login(Main.getInstance().getAppSettings().getProperty("ardon.upload.images.username"), Main.getInstance().getAppSettings().getProperty("ardon.upload.images.password"))) {
                 controller.appendTextToLog("Přihlášení k FTP serveru bylo úspěšné.");
-                if (!client.changeWorkingDirectory("/" + controller.getArdonImagesUrlPathReplaceTo())) {
+                if (!client.changeWorkingDirectory("/" + controller.getImagesUrlUploadRootArdon() + controller.getArdonImagesUrlPathReplaceTo())) {
                     client.changeToParentDirectory();
                 }
                 client.setFileType(FTP.BINARY_FILE_TYPE);

@@ -75,6 +75,8 @@ public class MainController implements Initializable {
     private TextField uploadFeedArdonRemoteDir;
     @FXML
     private TextField uploadFeedLumaRemoteDir;
+    @FXML
+    private TextField uploadImagesArdonRootDir;
     private final Engine engine = new Engine(this);
 
     @FXML
@@ -184,6 +186,10 @@ public class MainController implements Initializable {
 
     public String getImagesUrlUploadArdon() {
         return uploadImagesUrlArdon.getText().trim();
+    }
+
+    public String getImagesUrlUploadRootArdon() {
+        return uploadImagesArdonRootDir.getText().trim();
     }
 
     private void openSaveDialog(TextField targetField, boolean directory, String suggestedFileName) {
@@ -365,6 +371,7 @@ public class MainController implements Initializable {
         settings.setProperty("ardon.upload.images.url", uploadImagesUrlArdon.getText().trim());
         settings.setProperty("ardon.uploadUrl.remoteDir", uploadFeedArdonRemoteDir.getText().trim());
         settings.setProperty("luma.uploadUrl.remoteDir", uploadFeedLumaRemoteDir.getText().trim());
+        settings.setProperty("ardon.imagesPath.eshop.prefix", uploadImagesArdonRootDir.getText().trim());
     }
 
     @Override
@@ -390,5 +397,6 @@ public class MainController implements Initializable {
         uploadImagesUrlArdon.setText(Main.getInstance().getAppSettings().getProperty("ardon.upload.images.url"));
         uploadFeedArdonRemoteDir.setText(Main.getInstance().getAppSettings().getProperty("ardon.uploadUrl.remoteDir"));
         uploadFeedLumaRemoteDir.setText(Main.getInstance().getAppSettings().getProperty("luma.uploadUrl.remoteDir"));
+        uploadImagesArdonRootDir.setText(Main.getInstance().getAppSettings().getProperty("ardon.imagesPath.eshop.prefix"));
     }
 }

@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "TEZA Feed converter"
-#define MyAppVersion "1.0.0.0"
+#define MyAppVersion "1.1.0.0"
 #define MyAppPublisher "Jan Benák"
 #define MyAppExeName "FeedConverter.exe"
 
